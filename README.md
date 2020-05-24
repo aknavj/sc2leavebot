@@ -37,7 +37,7 @@ This script won't read anything from application process memory, it is not worki
 ## Python Modules
 After installing Python and Tesseract OCR we need to fetch a few packages via pip, start your command line 
 
-```python -m pip install --upgrade pip ``` (this will upgrade your pip)
+```python -m pip install --upgrade pip ``` -- this will upgrade your pip
 
 ```pip install pywin32``` -- install WIN32 API support for python
 
@@ -48,6 +48,8 @@ After installing Python and Tesseract OCR we need to fetch a few packages via pi
 ```pip install pytesseract``` -- install tesseract-ocr for python
 
 ## Execution / Run script
+1. Run StarCraft II
+2. Wait for game come up to Main Screen (after Login Screen) and run
 ```python main.py```
 
 ## Modfiication of Variables
