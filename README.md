@@ -49,7 +49,9 @@ After installing Python and Tesseract OCR we need to fetch a few packages via pi
 
 ## Execution / Run script
 1. Run StarCraft II
+    - In game Settings setup Display Mode instead of Fullscreen to Windowed Fullscreen
 2. Wait for game come up to Main Screen (after Login Screen) and run
+3. Run command line (cmd.exe) from sc2leavebot directory using command
 ```python main.py```
 
 ## Modfiication of Variables

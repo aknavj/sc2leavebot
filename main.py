@@ -64,9 +64,11 @@ if __name__ == '__main__':
         # if we dont have, we will be stucked in infinite loop and looking for that application
         have_application = checkApplicationState(windowName)
         if have_application == False:
-            while have_application != False:
-                print("Game Status: Looking for: " + windowName)
+            print("Game Status: Looking for: " + windowName)
+            while True:
                 have_application = checkApplicationState(windowName)
+                if have_application != False:
+                    break
 
         # point to active application
         MouseAutoClick(1,1) 
