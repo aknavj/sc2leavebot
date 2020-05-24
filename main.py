@@ -1,22 +1,11 @@
 # To-Do:    1. code polish (this is the rough version!)
 #           2. look for text and then execute action (no image croping as it is in [sc2actions.py])
 #           3. support dynamic window size in the application (not fixed size as it is currently 1920x1080) [sc2utils.py]
-
 from sc2utils import *
 from sc2actions import *
+from globals import *
+
 import time
-
-# general defined variables
-use_debug = False
-have_mouse_control = True #just for auto mouse corner pointing to the application!
-generalTimeDelay = 2
-
-modeSelect = '1v1'
-raceSelect = 'protoss'
-matchupSelect = 'ranked'
-
-windowName = 'StarCraft II'
-localCapture = "sc2framecapture.bmp"
 
 #
 # Application state
@@ -34,9 +23,7 @@ def checkApplicationState(windowName):
 def sc2CheckGameState(cvImg):
 
     if checkApplicationState(windowName):
-        cvImg = cv2.imread(localCapture, cv2.IMREAD_UNCHANGED)
-        if have_mouse_control:
-            MouseAutoClick(1,1) # point to active application
+        cvImg = cv2.imread(localCapture, cv2.IMREAD_UNCHANGED)     
 
     # set up gamestate
     frame = cvImg.copy()                # copy buffer
@@ -80,6 +67,9 @@ if __name__ == '__main__':
             while have_application != False:
                 print("Game Status: Looking for: " + windowName)
                 have_application = checkApplicationState(windowName)
+
+        # point to active application
+        MouseAutoClick(1,1) 
 
         # open captured frame from application
         cvImg = cv2.imread(localCapture, cv2.IMREAD_UNCHANGED)       

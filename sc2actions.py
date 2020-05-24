@@ -1,9 +1,24 @@
+from globals import *
 from sc2utils import *
 from cv2 import *
+
 import pytesseract
 import time
 
-pytesseract.pytesseract.tesseract_cmd = "C:\\Program Files (x86)\\Tesseract-OCR\\tesseract.exe"
+# setup tesseract
+pytesseract.pytesseract.tesseract_cmd = tesseractPath
+
+#
+#   Crop area display and detect what is on the screen - return as string
+#
+def sc2CropDetectMethod(cvImg, x1, y1, x2, y2):
+    copy = cvImg.copy()
+    refPoint = [(x1, y1), (x2, y2)]
+
+    source = copy[refPoint[0][1]:refPoint[1][1], refPoint[0][0]:refPoint[1][0]]
+    tess_source = cv2.cvtColor(source, cv2.COLOR_BGR2RGB)
+    tess_source_str = pytesseract.image_to_string(tess_source)
+    return str(tess_source_str or '')
 
 #
 # Prepare Versus Mode
@@ -76,111 +91,66 @@ def sc2PrepareVersus(modeSelect, raceSelect, matchupSelect):
 # Play Again (Search Status Queue)
 #
 def sc2InScoreScreen(cvImg):
-    play_again_crop = cvImg[88:122, 293:530]
-    tess_play_again = cv2.cvtColor(play_again_crop, cv2.COLOR_BGR2RGB)
-    tess_play_again_str = pytesseract.image_to_string(tess_play_again)
-
-    if 'DEFEAT!' in tess_play_again_str:
+    str = sc2CropDetectMethod(cvImg, 293, 88, 530, 122)
+    if 'DEFEAT!' in str:
         return True
-
-    if 'VICTORY!' in tess_play_again_str:
+    if 'VICTORY!' in str:
         return True
-
     return False
+    
 #
 # Loading Screen Area (Map name) + (Our Player Name) + (Enemy Player Name)
 # currently supported only 1v1!
 #
 def sc2InMapLoadStatus(cvImg):
-    mapname_crop = cvImg[685:744, 702:1236]
-    tess_mapname = cv2.cvtColor(mapname_crop, cv2.COLOR_BGR2RGB)
-    tess_mapname_str = pytesseract.image_to_string(tess_mapname)
-
-    if tess_mapname_str != "":
-        map_crop = cvImg[202:640,751:1167]
-
-        player1_crop = cvImg[449:467,256:511]
-        tess_player1 = cv2.cvtColor(player1_crop, cv2.COLOR_BGR2RGB)
-        tess_player1_str = pytesseract.image_to_string(tess_player1)
-
-        player2_crop = cvImg[449:467,1416:1671]
-        tess_player2 = cv2.cvtColor(player2_crop, cv2.COLOR_BGR2RGB)
-        tess_player2_str = pytesseract.image_to_string(tess_player2)
-
-        #if use_debug:
-        #    print(tess_player1_str + " versus " + tess_player2_str + " on: " + tess_mapname_str)
-        
+    str = sc2CropDetectMethod(cvImg, 702, 685, 1236, 744)
+    if str != "":
         return True
-
     return False
 #
 # In Game Detection (looking for TIMER!)
 #
 def sc2InGameStatus(cvImg):
-    ingame_timer_crop = cvImg[749:798, 269:331]
-    tess_ingame_timer = cv2.cvtColor(ingame_timer_crop, cv2.COLOR_BGR2RGB)
-    tess_ingame_timer_str = pytesseract.image_to_string(tess_ingame_timer)
-
-    if tess_ingame_timer_str:
+    str = sc2CropDetectMethod(cvImg, 269, 749, 331, 798)
+    if str:
         #if use_debug:
-        #    print("sc2InGameStatus(): Timer " + tess_ingame_timer_str)
-        
+        #    print("sc2InGameStatus(): Timer " + str)
         return True
-
     return False
 #
 # Campain Button -> indicates we are in Main Menu
 #
 def sc2InMainMenuStatus(cvImg):
-    menu_crop = cvImg[0:64, 74:267] 
-    tess_menu = cv2.cvtColor(menu_crop, cv2.COLOR_BGR2RGB)
-    tess_menu_str = pytesseract.image_to_string(tess_menu)
-
-    if 'CAMPAIGN' in tess_menu_str:
+    str = sc2CropDetectMethod(cvImg, 74, 0, 267, 64)
+    if 'CAMPAIGN' in str:
         return True
-
     return False
 #
 # Search Matchup
 #
 def sc2SearchStatus(cvImg):
-    # Search Status
-    search_crop = cvImg[1020:1038, 181:430] 
-    tess_search = cv2.cvtColor(search_crop, cv2.COLOR_BGR2RGB)
-    tess_search_str = pytesseract.image_to_string(tess_search)
-
-    if 'INITIALIZING' in tess_search_str:
+    str = sc2CropDetectMethod(cvImg, 181, 1020, 430, 1038)
+    if 'INITIALIZING' in str:
         return True
-
-    if 'SEARCHING' in tess_search_str:
+    if 'SEARCHING' in str:
         return True
-
-    if 'GAME' in tess_search_str:
+    if 'GAME' in str:
         return True
-
     return False
 #
 # Main Menu (Sub Menu)
 #
 def sc2MainMenuSubMenu(cvImg):
-    submainmenu_crop = cvImg[328:823, 800:1117] 
-    tess_submainmenu = cv2.cvtColor(submainmenu_crop, cv2.COLOR_BGR2RGB)
-    tess_submainmenu_str = pytesseract.image_to_string(tess_submainmenu)
-
-    if 'options' in tess_submainmenu_str:
+    str = sc2CropDetectMethod(cvImg, 800, 328, 1117, 823)
+    if 'options' in str:
         return True
-
     return False
 
 #
 # Victory Screen (oopsie!)
 #
-def sc2InGameVictory(frame):
-    victory_crop = cvImg[227:281, 743:1169] 
-    tess_victory = cv2.cvtColor(victory_crop, cv2.COLOR_BGR2RGB)
-    tess_victory_str = pytesseract.image_to_string(tess_victory)
-
-    if 'VICTORY!' in tess_victory_str:
+def sc2InGameVictory(cvImg):
+    str = sc2CropDetectMethod(cvImg, 743, 227, 1169, 281)
+    if 'VICTORY!' in str:
         return True
-
     return False
