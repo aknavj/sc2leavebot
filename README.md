@@ -1,6 +1,8 @@
 # sc2leavebot
 StarCraft 2 Leave Bot utilizing OpenCV, Tesseract-OCR and Win32 API
 
+In-Action Video Footage [here](https://www.youtube.com/watch?v=vd1A5gEf4ss)
+
 # How it works?
 The principle of this Python script is pretty simple. The script will basically grab image frame from the application (utilizing python win32 API), then it looks for specific regions, something like the area of interests in the image (utilizing OpenCV) and if it is able to detect string information (utilizing tesseract OCR), then the action is called.
 
